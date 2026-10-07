@@ -122,26 +122,47 @@ p{ margin:0; }
   .nav-call{ display:none; }
 }
 @media (max-width:900px){
+  .site-nav{
+    position:sticky;
+    top:0;
+    z-index:60;
+    background:#fff;
+  }
   .site-nav .wrap{ height:72px; }
   .brand img{ height:38px; }
   .nav-links{
-    position:fixed; inset:72px 0 0 0;
-    background:var(--paper);
-    flex-direction:column; align-items:flex-start;
-    padding:28px 24px; gap:8px;
-    opacity:0; pointer-events:none; transform:translateY(-8px);
-    transition:opacity .2s ease, transform .2s ease;
+    display:none;
+    position:absolute;
+    inset:100% 0 auto 0;
+    height:auto;
+    max-height:calc(100dvh - 72px);
+    overflow-y:auto;
+    z-index:61;
+    background:#fff;
+    box-shadow:0 12px 24px rgba(8,71,90,.12);
+    flex-direction:column;
+    align-items:stretch;
+    margin:0;
+    padding:20px 24px;
+    gap:8px;
+    opacity:1;
+    pointer-events:auto;
+    transform:none;
   }
-  .nav-links a{ font-size:20px; font-weight:600; padding:12px 0; }
-  .nav-links.open{ opacity:1; pointer-events:auto; transform:none; }
+  .nav-links.open{ display:flex; }
+  .nav-links a{
+    display:block;
+    font-size:20px;
+    font-weight:600;
+    padding:12px 0;
+  }
   .nav-toggle{
     display:flex; flex-direction:column; justify-content:center; gap:5px;
     width:40px; height:40px; background:none; border:none; cursor:pointer; padding:8px;
   }
   .nav-toggle span{ height:2px; background:var(--teal-900); border-radius:2px; }
-  .nav-cta .btn{ padding:12px 20px; font-size:14px; }
+  .nav-cta .btn{ padding:12px 20px; font-size:14px; ;display:none }
 }
-
 /* ---------- eyebrow / headings ---------- */
 .eyebrow{
   display:flex; align-items:center; gap:16px;
@@ -537,8 +558,77 @@ p{ margin:0; }
   font-size:13.5px; color:#7fa3ad;
 }
 
+/* ---------- contact popup ---------- */
+body.contact-open{ overflow:hidden; }
+.contact-modal{
+  position:fixed; inset:0; z-index:100;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px; background:rgba(6,48,61,.62);
+}
+.contact-modal[hidden]{ display:none; }
+.contact-dialog{
+  position:relative; width:min(100%,520px); max-height:calc(100dvh - 40px); overflow:auto;
+  padding:40px; background:#fff; border-radius:var(--radius-md); box-shadow:0 24px 70px rgba(6,48,61,.28);
+}
+.contact-close{
+  position:absolute; top:12px; right:14px;
+  width:40px; height:40px; border:0; background:transparent;
+  color:var(--teal-900); font:400 30px/1 var(--font); cursor:pointer;
+}
+.contact-dialog .eyebrow{ margin:0 0 14px; }
+.contact-dialog h2{ max-width:15ch; font-size:30px; }
+.contact-dialog > p{ margin-top:12px; color:var(--muted); font-size:15px; }
+.contact-dialog form{ display:grid; gap:9px; margin-top:24px; }
+.contact-dialog label{ color:var(--teal-900); font-size:14px; font-weight:600; }
+.contact-dialog input,.contact-dialog select{
+  width:100%; min-height:48px; margin-bottom:8px; padding:10px 12px;
+  border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff;
+  color:var(--ink); font:500 15px var(--font);
+}
+.contact-dialog input:focus,.contact-dialog select:focus{ outline:3px solid rgba(29,181,122,.28); border-color:var(--green-600); }
+.contact-dialog form .btn{ width:100%; margin-top:8px; }
+@media (max-width:520px){
+  .contact-dialog{ padding:36px 24px 24px; }
+  .contact-dialog h2{ font-size:26px; }
+}
+
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
   *{ transition:none !important; }
+}
+
+
+.whatsapp-float {
+  position: fixed;
+  right: calc(30px + env(safe-area-inset-right, 0px));
+  bottom: calc(35px + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+}
+
+.whatsapp-float svg {
+  width: 32px;
+  height: 32px;
+}
+
+.whatsapp-float:hover {
+  background: #128c4a;
+}
+
+.whatsapp-float:focus-visible {
+  outline: 3px solid #08475a;
+  outline-offset: 4px;
+}
+
+body.contact-open .whatsapp-float {
+  visibility: hidden;
 }

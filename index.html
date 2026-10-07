@@ -243,6 +243,30 @@
   </div>
 </footer>
 
+<div class="contact-modal" id="contactModal" hidden aria-hidden="true">
+  <section class="contact-dialog" role="dialog" aria-modal="true" aria-labelledby="contactTitle" aria-describedby="contactDescription">
+    <button class="contact-close" id="contactClose" type="button" aria-label="Close contact form">&times;</button>
+    <span class="eyebrow plain">Admissions open</span>
+    <h2 id="contactTitle">Let’s talk about your next step</h2>
+    <p id="contactDescription">Share your details and we’ll help you choose the right course and batch.</p>
+    <form id="contactForm">
+      <label for="contactName">Name</label>
+      <input id="contactName" name="name" autocomplete="name" required>
+      <label for="contactPhone">Phone number</label>
+      <input id="contactPhone" name="phone" type="tel" autocomplete="tel" required>
+      <label for="contactCourse">Course of interest</label>
+      <select id="contactCourse" name="course" required>
+        <option value="" selected disabled>Select a course</option>
+        <option>SSC</option>
+        <option>Railway (RRB)</option>
+        <option>Kerala PSC</option>
+        <option>Not sure yet</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Continue to WhatsApp</button>
+    </form>
+  </section>
+</div>
+
 <script>
   const navToggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
@@ -251,6 +275,64 @@
     navToggle.setAttribute('aria-expanded', open);
   });
   navLinks.addEventListener('click', e => { if (e.target.tagName === 'A') navLinks.classList.remove('open'); });
+
+  const contactModal = document.getElementById('contactModal');
+  const contactClose = document.getElementById('contactClose');
+  const contactForm = document.getElementById('contactForm');
+  const contactStorageKey = 'rankproContactPopupShown';
+
+  function closeContactModal() {
+    contactModal.hidden = true;
+    contactModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('contact-open');
+  }
+
+  function openContactModal() {
+    contactModal.hidden = false;
+    contactModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('contact-open');
+    contactClose.focus();
+    try {
+      localStorage.setItem(contactStorageKey, 'true');
+    } catch (error) {
+      // The popup still runs for this page view when browser storage is unavailable.
+    }
+  }
+
+  let contactPopupShown = false;
+  try {
+    contactPopupShown = localStorage.getItem(contactStorageKey) === 'true';
+  } catch (error) {
+    contactPopupShown = false;
+  }
+  if (!contactPopupShown) window.setTimeout(openContactModal, 6000);
+
+  contactClose.addEventListener('click', closeContactModal);
+  contactModal.addEventListener('click', event => {
+    if (event.target === contactModal) closeContactModal();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !contactModal.hidden) closeContactModal();
+  });
+  contactForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const formData = new FormData(contactForm);
+    const message = `Hi, I'm ${formData.get('name')}. My phone number is ${formData.get('phone')}. I'm interested in ${formData.get('course')} courses.`;
+    window.open(`https://wa.me/919249547330?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    closeContactModal();
+  });
 </script>
+<a
+  href="https://wa.me/919249547330"
+  class="whatsapp-float"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Chat on WhatsApp"
+>
+  <svg viewBox="0 0 32 32" aria-hidden="true">
+    <path fill="currentColor" d="M16 .8A15.2 15.2 0 0 0 2.9 23.7L.8 31.2l7.7-2A15.2 15.2 0 1 0 16 .8Zm0 27.8a12.5 12.5 0 0 1-6.4-1.8l-.5-.3-4.6 1.2 1.2-4.5-.3-.5A12.6 12.6 0 1 1 16 28.6Z"/>
+    <path fill="currentColor" d="M12 8.7c-.3-.7-.6-.7-.9-.7h-.8c-.3 0-.8.1-1.2.5-.4.5-1.5 1.5-1.5 3.6s1.5 4.1 1.7 4.4c.2.3 3 4.7 7.3 6.4 3.6 1.4 4.3 1.1 5.1 1 .8-.1 2.6-1.1 3-2.1.4-1 .4-1.8.3-2-.1-.2-.4-.3-.9-.6l-2.9-1.4c-.4-.2-.8-.3-1.1.2-.3.5-1.1 1.4-1.3 1.7-.2.3-.5.3-.9.1-.5-.2-1.9-.7-3.5-2.1-1.3-1.2-2.2-2.7-2.4-3.2-.3-.4 0-.7.2-.9l.7-.8c.2-.3.3-.5.5-.8.1-.3.1-.6 0-.8l-1.4-3.5Z"/>
+  </svg>
+</a>
 </body>
 </html>
